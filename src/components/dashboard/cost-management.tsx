@@ -26,7 +26,20 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const COLORS = ['#3b82f6', '#22c55e', '#f59e0b', '#8b5cf6'];
+// 建匠ブランド 原価管理カラーパレット
+const KENSHO_COST_COLORS = {
+  material: "#B45309",     // 材料費 - アンバー（木材イメージ）
+  labor: "#1E3A5F",        // 人件費 - ネイビー（信頼）
+  outsource: "#059669",    // 外注費 - エメラルド（成長）
+  other: "#7C3AED",        // その他 - パープル（付加価値）
+};
+
+const COLORS = [
+  KENSHO_COST_COLORS.material,
+  KENSHO_COST_COLORS.labor,
+  KENSHO_COST_COLORS.outsource,
+  KENSHO_COST_COLORS.other
+];
 
 export function CostOverview() {
   const totalContract = sampleProjects.reduce((sum, p) => sum + p.contractAmount, 0);
@@ -174,42 +187,60 @@ export function CostCategoryChart() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">原価構成比</CardTitle>
+        <CardTitle className="text-base flex items-center gap-2">
+          <span className="w-3 h-3 rounded bg-gradient-to-r from-amber-500 to-amber-700"></span>
+          原価構成比
+        </CardTitle>
         <CardDescription>カテゴリ別の原価内訳</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[200px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
+              <defs>
+                {COLORS.map((color, index) => (
+                  <linearGradient key={`grad-${index}`} id={`pieGrad-${index}`} x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor={color} stopOpacity={1}/>
+                    <stop offset="100%" stopColor={color} stopOpacity={0.7}/>
+                  </linearGradient>
+                ))}
+              </defs>
               <Pie
                 data={costCategoryData}
                 cx="50%"
                 cy="50%"
-                innerRadius={40}
-                outerRadius={70}
-                paddingAngle={2}
+                innerRadius={45}
+                outerRadius={75}
+                paddingAngle={3}
                 dataKey="amount"
+                stroke="#fff"
+                strokeWidth={2}
               >
                 {costCategoryData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell key={`cell-${index}`} fill={`url(#pieGrad-${index})`} />
                 ))}
               </Pie>
               <ChartTooltip
                 content={<ChartTooltipContent />}
                 formatter={(value: number) => formatFullCurrency(value)}
+                contentStyle={{
+                  backgroundColor: '#FFFBEB',
+                  border: '1px solid #D97706',
+                  borderRadius: '8px'
+                }}
               />
             </PieChart>
           </ResponsiveContainer>
         </ChartContainer>
         <div className="grid grid-cols-2 gap-2 mt-4">
           {costCategoryData.map((item, index) => (
-            <div key={item.category} className="flex items-center gap-2">
+            <div key={item.category} className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-muted/50 transition-colors">
               <div
-                className="w-3 h-3 rounded-full"
+                className="w-3 h-3 rounded-sm shadow-sm"
                 style={{ backgroundColor: COLORS[index] }}
               />
-              <span className="text-xs">{item.category}</span>
-              <span className="text-xs text-muted-foreground ml-auto">{item.percentage}%</span>
+              <span className="text-xs font-medium">{item.category}</span>
+              <span className="text-xs text-muted-foreground ml-auto font-semibold">{item.percentage}%</span>
             </div>
           ))}
         </div>
