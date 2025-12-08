@@ -22,7 +22,12 @@ import {
   Calculator,
   Calendar,
   Users,
-  MessageSquare
+  MessageSquare,
+  Palette,
+  Megaphone,
+  LineChart,
+  Crown,
+  Star
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -397,6 +402,173 @@ export function WorkflowAutomation() {
               {Math.round(workflows.reduce((sum, w) => sum + w.automation, 0) / workflows.length)}%
             </span>
           </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// 専門AIエージェント群
+interface SpecializedAgent {
+  id: string;
+  name: string;
+  title: string;
+  description: string;
+  specialty: string[];
+  status: 'active' | 'standby' | 'working';
+  currentTask?: string;
+  icon: React.ElementType;
+  gradient: string;
+  badge: string;
+}
+
+const specializedAgents: SpecializedAgent[] = [
+  {
+    id: 'design-director',
+    name: '建匠デザイン統括',
+    title: '日本最強UIUX至高のデザイン責任者',
+    description: 'ANDPADを超える最高のUI/UXを追求。建匠ブランドの世界観を体現し、顧客体験を最大化',
+    specialty: ['UI/UXデザイン', 'ブランディング', 'ユーザビリティ設計', 'デザインシステム'],
+    status: 'active',
+    currentTask: 'ダッシュボード最適化中',
+    icon: Palette,
+    gradient: 'from-pink-500 via-rose-500 to-red-500',
+    badge: '最高デザイン責任者'
+  },
+  {
+    id: 'advertising-agent',
+    name: '建匠広告AI',
+    title: '広告最適化エージェント',
+    description: 'Google/Meta/LINE広告を自動最適化。ROASを最大化し、見込み客獲得コストを最小化',
+    specialty: ['リスティング広告', 'SNS広告', 'リターゲティング', 'クリエイティブ生成'],
+    status: 'working',
+    currentTask: 'Meta広告クリエイティブ生成中',
+    icon: Megaphone,
+    gradient: 'from-blue-500 via-cyan-500 to-teal-500',
+    badge: '広告ROI +340%'
+  },
+  {
+    id: 'marketing-strategist',
+    name: '建匠マーケティング戦略AI',
+    title: 'マーケティング専門戦略構築エージェント',
+    description: '100億円達成に向けた包括的マーケティング戦略を立案・実行。データドリブンで成果を最大化',
+    specialty: ['市場分析', 'ペルソナ設計', 'カスタマージャーニー', 'コンテンツ戦略'],
+    status: 'active',
+    currentTask: '高知県シェア拡大戦略策定中',
+    icon: LineChart,
+    gradient: 'from-amber-500 via-orange-500 to-red-500',
+    badge: '戦略構築Expert'
+  }
+];
+
+export function SpecializedAgentsPanel() {
+  return (
+    <Card className="col-span-full">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-gradient-to-br from-amber-400 via-yellow-500 to-orange-500 shadow-lg">
+              <Crown className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                専門AIエージェント
+                <Badge variant="outline" className="bg-gradient-to-r from-amber-50 to-yellow-50 text-amber-700 border-amber-200">
+                  <Star className="h-3 w-3 mr-1 fill-amber-500" />
+                  Premium
+                </Badge>
+              </CardTitle>
+              <CardDescription>日本最高峰のAIスペシャリストチーム</CardDescription>
+            </div>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-4 md:grid-cols-3">
+          {specializedAgents.map((agent) => (
+            <div
+              key={agent.id}
+              className="relative overflow-hidden rounded-xl border bg-card transition-all hover:shadow-lg hover:-translate-y-1"
+            >
+              {/* グラデーションヘッダー */}
+              <div className={cn("h-2 bg-gradient-to-r", agent.gradient)} />
+
+              <div className="p-5">
+                {/* エージェント情報 */}
+                <div className="flex items-start gap-4 mb-4">
+                  <div className={cn(
+                    "p-3 rounded-xl bg-gradient-to-br shadow-lg",
+                    agent.gradient
+                  )}>
+                    <agent.icon className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-bold text-sm truncate">{agent.name}</h4>
+                      <div className={cn(
+                        "w-2 h-2 rounded-full",
+                        agent.status === 'active' && "bg-green-500 animate-pulse",
+                        agent.status === 'working' && "bg-blue-500 animate-pulse",
+                        agent.status === 'standby' && "bg-gray-400"
+                      )} />
+                    </div>
+                    <p className="text-xs text-muted-foreground truncate">{agent.title}</p>
+                  </div>
+                </div>
+
+                {/* バッジ */}
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "mb-3 text-xs",
+                    agent.id === 'design-director' && "bg-pink-50 text-pink-700 border-pink-200",
+                    agent.id === 'advertising-agent' && "bg-blue-50 text-blue-700 border-blue-200",
+                    agent.id === 'marketing-strategist' && "bg-amber-50 text-amber-700 border-amber-200"
+                  )}
+                >
+                  {agent.badge}
+                </Badge>
+
+                {/* 説明 */}
+                <p className="text-xs text-muted-foreground mb-4 line-clamp-2">
+                  {agent.description}
+                </p>
+
+                {/* 専門分野 */}
+                <div className="flex flex-wrap gap-1 mb-4">
+                  {agent.specialty.map((skill) => (
+                    <Badge key={skill} variant="secondary" className="text-xs py-0">
+                      {skill}
+                    </Badge>
+                  ))}
+                </div>
+
+                {/* 現在のタスク */}
+                {agent.currentTask && (
+                  <div className="p-2 rounded-lg bg-muted/50 border border-dashed">
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                      <span className="text-xs text-muted-foreground">実行中:</span>
+                    </div>
+                    <p className="text-xs font-medium mt-1">{agent.currentTask}</p>
+                  </div>
+                )}
+
+                {/* アクションボタン */}
+                <div className="flex gap-2 mt-4">
+                  <Button size="sm" variant="outline" className="flex-1 text-xs">
+                    詳細を見る
+                  </Button>
+                  <Button size="sm" className={cn(
+                    "flex-1 text-xs text-white bg-gradient-to-r",
+                    agent.gradient
+                  )}>
+                    タスクを依頼
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </CardContent>
     </Card>
