@@ -4,7 +4,7 @@ import { DashboardLayout } from "@/components/dashboard/sidebar-nav";
 import { KPICards } from "@/components/dashboard/kpi-cards";
 import { SalesChart, ProfitTrendChart } from "@/components/dashboard/sales-chart";
 import { PipelineBoard, PipelineSummary } from "@/components/dashboard/pipeline-board";
-import { AIAutomationPanel, AIRecommendations, KnowledgeBase, WorkflowAutomation, SpecializedAgentsPanel } from "@/components/dashboard/ai-automation";
+import { AIAutomationPanel, AIRecommendations, KnowledgeBase, WorkflowAutomation, SpecializedAgentsPanel, MindBoosterPanel } from "@/components/dashboard/ai-automation";
 import { CostOverview, ProjectCostTable, CostCategoryChart, MarginAlerts } from "@/components/dashboard/cost-management";
 import { ScheduleManagement, ScheduleAlerts, TodaysTasks } from "@/components/dashboard/schedule-gantt";
 import { AlertsPanel, LarkIntegrationStatus, QuickActions } from "@/components/dashboard/alerts-panel";

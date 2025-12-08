@@ -5,17 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import {
   DollarSign,
   TrendingUp,
-  TrendingDown,
   AlertTriangle,
   CheckCircle,
   Package,
-  Users,
-  Wrench,
-  Building
+  Wrench
 } from "lucide-react";
 import { sampleProjects, costCategoryData, formatCurrency, formatFullCurrency } from "@/lib/data";
 import { cn } from "@/lib/utils";
@@ -46,7 +43,6 @@ export function CostOverview() {
   const totalEstimated = sampleProjects.reduce((sum, p) => sum + p.estimatedCost, 0);
   const totalActual = sampleProjects.reduce((sum, p) => sum + p.actualCost, 0);
   const expectedMargin = totalContract - totalEstimated;
-  const currentMargin = totalContract - totalActual;
 
   return (
     <div className="grid gap-4 md:grid-cols-4">
@@ -216,7 +212,7 @@ export function CostCategoryChart() {
                 stroke="#fff"
                 strokeWidth={2}
               >
-                {costCategoryData.map((entry, index) => (
+                {costCategoryData.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={`url(#pieGrad-${index})`} />
                 ))}
               </Pie>
