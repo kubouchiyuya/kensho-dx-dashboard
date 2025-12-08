@@ -5,7 +5,7 @@ import { DashboardLayout } from "@/components/dashboard/sidebar-nav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FileText, Folder, Upload, Download, Eye, X, ChevronRight, Search, Filter } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
