@@ -1,18 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import { DashboardLayout } from "@/components/dashboard/sidebar-nav";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { MessageSquare, Bell, Database, CheckCircle, Settings } from "lucide-react";
+import { MessageSquare, Bell, CheckCircle, Settings } from "lucide-react";
 
-const integrations = [
-  { name: 'グループ通知', status: 'connected', enabled: true, description: 'アラートをグループチャットに送信' },
-  { name: 'Bitable同期', status: 'connected', enabled: true, description: 'データをBitableに自動同期' },
-  { name: '承認ワークフロー', status: 'connected', enabled: true, description: '見積・追加工事の承認フロー' },
-  { name: 'カレンダー連携', status: 'connected', enabled: true, description: '工程をカレンダーに反映' },
-  { name: 'ドキュメント共有', status: 'connected', enabled: false, description: '図面・資料の自動共有' },
+const defaultIntegrations = [
+  { id: 'group', name: 'グループ通知', status: 'connected', enabled: true, description: 'アラートをグループチャットに送信' },
+  { id: 'bitable', name: 'Bitable同期', status: 'connected', enabled: true, description: 'データをBitableに自動同期' },
+  { id: 'approval', name: '承認ワークフロー', status: 'connected', enabled: true, description: '見積・追加工事の承認フロー' },
+  { id: 'calendar', name: 'カレンダー連携', status: 'connected', enabled: true, description: '工程をカレンダーに反映' },
+  { id: 'docs', name: 'ドキュメント共有', status: 'connected', enabled: false, description: '図面・資料の自動共有' },
 ];
 
 const recentMessages = [
@@ -23,6 +24,14 @@ const recentMessages = [
 ];
 
 export default function LarkPage() {
+  const [integrations, setIntegrations] = useState(defaultIntegrations);
+
+  const toggleIntegration = (id: string) => {
+    setIntegrations(prev => prev.map(item =>
+      item.id === id ? { ...item, enabled: !item.enabled } : item
+    ));
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -59,7 +68,10 @@ export default function LarkPage() {
                       <p className="text-xs text-muted-foreground">{item.description}</p>
                     </div>
                   </div>
-                  <Switch checked={item.enabled} />
+                  <Switch
+                    checked={item.enabled}
+                    onCheckedChange={() => toggleIntegration(item.id)}
+                  />
                 </div>
               ))}
             </CardContent>

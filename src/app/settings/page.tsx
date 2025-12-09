@@ -38,8 +38,14 @@ import {
   Crown,
   Smartphone,
   DollarSign,
-  Clock
+  Clock,
+  Database,
+  Table,
+  FileSpreadsheet,
+  Upload
 } from "lucide-react";
+import { DataImportDialog } from "@/components/data-import/data-import-dialog";
+import { ProjectForm, DealForm, CustomerForm, CostForm } from "@/components/forms";
 
 // AI プロバイダー設定
 interface AIProvider {
@@ -187,8 +193,12 @@ export default function SettingsPage() {
           </Button>
         </div>
 
-        <Tabs defaultValue="ai" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
+        <Tabs defaultValue="data" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid">
+            <TabsTrigger value="data" className="flex items-center gap-2">
+              <Database className="h-4 w-4" />
+              <span className="hidden sm:inline">データ連携</span>
+            </TabsTrigger>
             <TabsTrigger value="ai" className="flex items-center gap-2">
               <Brain className="h-4 w-4" />
               <span className="hidden sm:inline">AIコネクター</span>
@@ -210,6 +220,193 @@ export default function SettingsPage() {
               <span className="hidden sm:inline">共有・印刷</span>
             </TabsTrigger>
           </TabsList>
+
+          {/* データ連携タブ */}
+          <TabsContent value="data" className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Lark Bitable */}
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-blue-100">
+                      <Database className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base">Lark Bitable</CardTitle>
+                      <CardDescription>BitableでデータをCRUD管理</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                      <span className="text-sm">接続済み</span>
+                    </div>
+                    <Badge variant="outline">5テーブル</Badge>
+                  </div>
+                  <div className="grid grid-cols-5 gap-1">
+                    {['案件', '商談', '顧客', '原価', '工程'].map((t) => (
+                      <Badge key={t} variant="secondary" className="justify-center text-xs">{t}</Badge>
+                    ))}
+                  </div>
+                  <div className="space-y-2">
+                    <div>
+                      <Label className="text-xs">Bitable App Token</Label>
+                      <Input placeholder="bascXXX..." className="mt-1 h-8" />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Table ID</Label>
+                      <Input placeholder="tblXXX..." className="mt-1 h-8" />
+                    </div>
+                  </div>
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Bitableと同期
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Google Sheets */}
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-green-100">
+                      <Table className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base">Google Sheets</CardTitle>
+                      <CardDescription>スプレッドシートからデータ取得</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                      <span className="text-sm">接続済み</span>
+                    </div>
+                    <Badge variant="outline">4シート</Badge>
+                  </div>
+                  <div className="grid grid-cols-4 gap-1">
+                    {['売上', 'KPI', '案件', '顧客'].map((t) => (
+                      <Badge key={t} variant="secondary" className="justify-center text-xs">{t}</Badge>
+                    ))}
+                  </div>
+                  <div>
+                    <Label className="text-xs">スプレッドシートID</Label>
+                    <Input placeholder="1BxiMVs0XRA5nFMd..." className="mt-1 h-8" />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button className="flex-1 bg-green-600 hover:bg-green-700">
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Sheetsと同期
+                    </Button>
+                    <Button variant="outline">
+                      <Link className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Excel */}
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-emerald-100">
+                      <FileSpreadsheet className="h-5 w-5 text-emerald-600" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base">Excel インポート</CardTitle>
+                      <CardDescription>.xlsx/.xlsファイルを取り込み</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="p-6 rounded-lg border-2 border-dashed text-center">
+                    <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                    <p className="text-sm text-muted-foreground">ドラッグ&ドロップ または</p>
+                    <Button variant="outline" size="sm" className="mt-2">
+                      ファイルを選択
+                    </Button>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    テンプレート: 案件 / 商談 / 顧客 / 原価 / 売上
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* 手動入力 */}
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-purple-100">
+                      <FileText className="h-5 w-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base">手動入力</CardTitle>
+                      <CardDescription>フォームから直接データ登録</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-2">
+                    <ProjectForm
+                      trigger={<Button variant="outline" size="sm" className="w-full">案件を追加</Button>}
+                    />
+                    <DealForm
+                      trigger={<Button variant="outline" size="sm" className="w-full">商談を追加</Button>}
+                    />
+                    <CustomerForm
+                      trigger={<Button variant="outline" size="sm" className="w-full">顧客を追加</Button>}
+                    />
+                    <CostForm
+                      trigger={<Button variant="outline" size="sm" className="w-full">原価を追加</Button>}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* データ同期ステータス */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">データ同期ステータス</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-5 gap-4">
+                  {[
+                    { name: '案件', count: 12, source: 'Lark', time: '5分前' },
+                    { name: '商談', count: 8, source: 'Lark', time: '5分前' },
+                    { name: '顧客', count: 45, source: 'Sheets', time: '10分前' },
+                    { name: '原価', count: 156, source: 'Excel', time: '1時間前' },
+                    { name: '売上', count: 24, source: 'Sheets', time: '15分前' },
+                  ].map((item) => (
+                    <div key={item.name} className="p-3 rounded-lg bg-muted/50 text-center">
+                      <p className="text-2xl font-bold">{item.count}</p>
+                      <p className="text-xs font-medium">{item.name}</p>
+                      <Badge variant="outline" className="mt-1 text-xs">{item.source}</Badge>
+                      <p className="text-xs text-muted-foreground mt-1">{item.time}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 flex gap-2">
+                  <DataImportDialog
+                    trigger={
+                      <Button className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+                        <Database className="h-4 w-4 mr-2" />
+                        データ連携を開く
+                      </Button>
+                    }
+                  />
+                  <Button variant="outline">
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    全データ同期
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* AIコネクタータブ */}
           <TabsContent value="ai" className="space-y-6">
